@@ -17,10 +17,11 @@ jobs:
         uses: actions/setup-dotnet@v4
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore src/FluentNHibernate.sln
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build src/FluentNHibernate.sln -c Release --no-restore
 
       - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet test src/FluentNHibernate.sln -c Release --no-build
+  
