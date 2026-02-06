@@ -6,15 +6,29 @@ on:
   pull_request:
 
 jobs:
-  build_and_test:
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup .NET
+      # Install both SDKs so tests can run where applicable
+      - name: Setup .NET 6
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
 
       - name: Restore
         run: dotnet restore src/FluentNHibernate.sln
@@ -22,6 +36,12 @@ jobs:
       - name: Build
         run: dotnet build src/FluentNHibernate.sln -c Release --no-restore
 
-      - name: Test
-        run: dotnet test src/FluentNHibernate.sln -c Release --no-build
-  
+      # Windows: run net48 tests (works natively)
+      - name: Test (net48)
+        if: runner.os == 'Windows'
+        run: dotnet test src/FluentNHibernate.sln -c Release --no-build -f net48
+
+      # Linux: run net6 tests
+      - name: Test (net6.0)
+        if: runner.os != 'Windows'
+        run: dotnet test src/FluentNHibernate.sln -c Release --no-build -f net6.0
