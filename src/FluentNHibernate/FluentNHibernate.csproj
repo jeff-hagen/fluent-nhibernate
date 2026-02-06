@@ -14,6 +14,16 @@
     <RuntimeFrameworkVersion>2.0.9</RuntimeFrameworkVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>FluentNHibernate.Toofy</PackageId>
+    <AssemblyName>FluentNHibernate.Toofy</AssemblyName>
+    <RootNamespace>FluentNHibernate</RootNamespace>
+    <Authors>Impartner</Authors>
+    <RepositoryUrl>https://github.com/jeff-hagen/fluent-nhibernate</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/jeff-hagen/fluent-nhibernate</PackageProjectUrl>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <PackageReference Include="NHibernate" Version="5.4.9" />
   </ItemGroup>

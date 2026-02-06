@@ -29,4 +29,15 @@ public class XmlCacheWriterTester
 
         testHelper.VerifyAll(writer);
     }
+    /*
+    [Test]
+    public void ShouldWriteIncludeAttribute()
+    {
+        writer = new XmlCacheWriter();
+        var testHelper = new XmlWriterTestHelper<CacheMapping>();
+        testHelper.Check(x => x.Include, "include").MapsToAttribute("include");
+
+        testHelper.VerifyAll(writer);
+    }
+    */
 }
