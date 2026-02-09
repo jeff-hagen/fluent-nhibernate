@@ -29,7 +29,7 @@ public class XmlCacheWriterTester
 
         testHelper.VerifyAll(writer);
     }
-    /*
+    
     [Test]
     public void ShouldWriteIncludeAttribute()
     {
@@ -39,5 +39,4 @@ public class XmlCacheWriterTester
 
         testHelper.VerifyAll(writer);
     }
-    */
 }
