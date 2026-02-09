@@ -5,6 +5,7 @@ using NUnit.Framework;
 using NHibernate;
 using System.Collections;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace FluentNHibernate.Testing.Testing;
 
@@ -79,8 +80,8 @@ public class PersistenceSpecificationTester
     [SetUp]
     public void Setup()
     {
-        if (!OperatingSystem.IsWindows())
-            Assert.Ignore("Uses System.Drawing.Bitmap; run on Windows only.");
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Assert.Ignore("Uses System.Drawing.Bitmap; Windows only.");
         
         var firstKitten = new Kitten { Id = 1, Name = "Kitten" };
         cat = new Cat
