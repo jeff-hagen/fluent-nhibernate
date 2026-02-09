@@ -7,33 +7,34 @@ on:
       - "v*"
 
 jobs:
-  build_pack_push:
+  verify:
+    uses: ./.github/workflows/dotnet-build-test.yml
+    with:
+      os: ubuntu-latest
+      solution: src/FluentNHibernate.sln
+      configuration: Release
+      setup_dotnet_8: true
+      setup_dotnet_6: false
+      test_framework: net6.0
+
+  pack_push:
+    needs: verify
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: src
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup .NET (uses global.json if present)
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore src/FluentNHibernate.sln
 
       - name: Build
-        run: dotnet build -c Release --no-restore
-
-      - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet build src/FluentNHibernate.sln -c Release --no-restore
 
       - name: Pack
-        run: dotnet pack -c Release --no-build -o ./artifacts
+        run: dotnet pack src/FluentNHibernate.sln -c Release --no-build -o ./artifacts
 
       - name: Push to NuGet.org
         run: dotnet nuget push "./artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
