@@ -79,11 +79,11 @@ public class DefaultOutputFormatterTests
             "  " + typeof(One).Name + " | first reason  | " + typeof(One).AssemblyQualifiedName + nl +
             "  " + typeof(Two).Name + " | second reason | " + typeof(Two).AssemblyQualifiedName + nl +
             nl +
-            "Candidate types:{nl}{nl}" +
+            $"Candidate types:{nl}{nl}" +
             "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
             "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl +
             nl + 
-            "Mapped types:{nl}{nl}" +
+            $"Mapped types:{nl}{nl}" +
             "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
             "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl
         );
