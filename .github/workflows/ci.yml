@@ -6,42 +6,22 @@ on:
   pull_request:
 
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+  windows:
+    uses: ./.github/workflows/dotnet-build-test.yml
+    with:
+      os: windows-latest
+      solution: src/FluentNHibernate.sln
+      configuration: Release
+      setup_dotnet_6: true
+      setup_dotnet_8: true
+      test_framework: net48
 
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      # Install both SDKs so tests can run where applicable
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "6.0.x"
-
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Restore
-        run: dotnet restore src/FluentNHibernate.sln
-
-      - name: Build
-        run: dotnet build src/FluentNHibernate.sln -c Release --no-restore
-
-      # Windows: run net48 tests (works natively)
-      - name: Test (net48)
-        if: runner.os == 'Windows'
-        run: dotnet test src/FluentNHibernate.sln -c Release --no-build -f net48
-
-      # Linux: run net6 tests
-      - name: Test (net6.0)
-        if: runner.os != 'Windows'
-        run: dotnet test src/FluentNHibernate.sln -c Release --no-build -f net6.0
+  linux:
+    uses: ./.github/workflows/dotnet-build-test.yml
+    with:
+      os: ubuntu-latest
+      solution: src/FluentNHibernate.sln
+      configuration: Release
+      setup_dotnet_6: true
+      setup_dotnet_8: true
+      test_framework: net6.0

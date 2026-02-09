@@ -1,0 +1,57 @@
+﻿name: Build/Test
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        required: true
+      solution:
+        type: string
+        required: true
+      configuration:
+        type: string
+        default: Release
+      test_framework:
+        type: string
+        default: ""
+      setup_dotnet_6:
+        type: boolean
+        default: false
+      setup_dotnet_8:
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ${{ inputs.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 6
+        if: ${{ inputs.setup_dotnet_6 }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Setup .NET 8
+        if: ${{ inputs.setup_dotnet_8 }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore ${{ inputs.solution }}
+
+      - name: Build
+        run: dotnet build ${{ inputs.solution }} -c ${{ inputs.configuration }} --no-restore
+
+      - name: Test
+        run: >
+          dotnet test ${{ inputs.solution }}
+          -c ${{ inputs.configuration }}
+          --no-build
+          ${{ inputs.test_framework != '' && format('-f {0}', inputs.test_framework) || '' }}
