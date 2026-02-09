@@ -10,12 +10,12 @@ jobs:
   verify:
     uses: ./.github/workflows/dotnet-build-test.yml
     with:
-      os: ubuntu-latest
+      os: windows-latest
       solution: src/FluentNHibernate.sln
       configuration: Release
       setup_dotnet_8: true
-      setup_dotnet_6: false
-      test_framework: net6.0
+      setup_dotnet_6: true
+      test_framework: net48
 
   pack_push:
     needs: verify
