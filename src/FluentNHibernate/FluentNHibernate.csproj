@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>FluentNHibernate.Toofy</PackageId>
-    <AssemblyName>FluentNHibernate.Toofy</AssemblyName>
+    <PackageId>FluentNHibernate.Next</PackageId>
+    <AssemblyName>FluentNHibernate.Next</AssemblyName>
     <RootNamespace>FluentNHibernate</RootNamespace>
     <Authors>Impartner</Authors>
     <RepositoryUrl>https://github.com/jeff-hagen/fluent-nhibernate</RepositoryUrl>
