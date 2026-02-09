@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Diagnostics;
+﻿using System;
+using FluentNHibernate.Diagnostics;
 using NUnit.Framework;
 
 namespace FluentNHibernate.Testing.Diagnostics;
@@ -51,39 +52,40 @@ public class DefaultOutputFormatterTests
                 },
             });
         var output = formatter.Format(results);
+        var nl = Environment.NewLine;
 
         output.ShouldEqual(
-            "Fluent Mappings\r\n" +
-            "---------------\r\n\r\n" +
-            "Sources scanned:\r\n\r\n" +
-            "  " + typeof(One).Assembly.GetName().FullName + "\r\n" +
-            "\r\n" +
-            "Mappings discovered:\r\n\r\n" +
-            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + "\r\n" +
-            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + "\r\n" +
-            "\r\n" +
-            "Conventions\r\n" +
-            "-----------\r\n\r\n" +
-            "Sources scanned:\r\n\r\n" +
-            "  " + typeof(One).Assembly.GetName().FullName + "\r\n" +
-            "\r\n" +
-            "Conventions discovered:\r\n\r\n" +
-            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + "\r\n" +
-            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + "\r\n" +
-            "\r\n" +
-            "Automapping\r\n" +
-            "-----------\r\n\r\n" +
-            "Skipped types:\r\n\r\n" + 
-            "  " + typeof(One).Name + " | first reason  | " + typeof(One).AssemblyQualifiedName + "\r\n" +
-            "  " + typeof(Two).Name + " | second reason | " + typeof(Two).AssemblyQualifiedName + "\r\n" +
-            "\r\n" +
-            "Candidate types:\r\n\r\n" +
-            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + "\r\n" +
-            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + "\r\n" +
-            "\r\n" + 
-            "Mapped types:\r\n\r\n" +
-            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + "\r\n" +
-            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + "\r\n"
+            $"Fluent Mappings{nl}" +
+            $"---------------{nl}{nl}" +
+            $"Sources scanned:{nl}{nl}" +
+            "  " + typeof(One).Assembly.GetName().FullName + nl +
+            nl +
+            $"Mappings discovered:{nl}{nl}" +
+            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
+            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl +
+            nl +
+            $"Conventions{nl}" +
+            $"-----------{nl}{nl}" +
+            $"Sources scanned:{nl}{nl}" +
+            "  " + typeof(One).Assembly.GetName().FullName + nl +
+            nl +
+            $"Conventions discovered:{nl}{nl}" +
+            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
+            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl +
+            nl +
+            $"Automapping{nl}" +
+            $"-----------{nl}{nl}" +
+            $"Skipped types:{nl}{nl}" + 
+            "  " + typeof(One).Name + " | first reason  | " + typeof(One).AssemblyQualifiedName + nl +
+            "  " + typeof(Two).Name + " | second reason | " + typeof(Two).AssemblyQualifiedName + nl +
+            nl +
+            $"Candidate types:{nl}{nl}" +
+            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
+            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl +
+            nl + 
+            $"Mapped types:{nl}{nl}" +
+            "  " + typeof(One).Name + " | " + typeof(One).AssemblyQualifiedName + nl +
+            "  " + typeof(Two).Name + " | " + typeof(Two).AssemblyQualifiedName + nl
         );
     }
 
