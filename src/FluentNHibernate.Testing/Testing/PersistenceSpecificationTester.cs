@@ -79,6 +79,9 @@ public class PersistenceSpecificationTester
     [SetUp]
     public void Setup()
     {
+        if (!OperatingSystem.IsWindows())
+            Assert.Ignore("Uses System.Drawing.Bitmap; run on Windows only.");
+        
         var firstKitten = new Kitten { Id = 1, Name = "Kitten" };
         cat = new Cat
         {
