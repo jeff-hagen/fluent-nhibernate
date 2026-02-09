@@ -26,5 +26,8 @@ public class XmlCacheWriter : NullMappingModelVisitor, IXmlWriter<CacheMapping>
 
         if (mapping.IsSpecified("Usage"))
             element.WithAtt("usage", mapping.Usage);
+        
+        if (mapping.IsSpecified("Include"))
+            element.WithAtt("include", mapping.Include);
     }
 }
