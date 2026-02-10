@@ -25,7 +25,6 @@
 
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerReleaseBranchPattern>^(main)$</MinVerReleaseBranchPattern>
   </PropertyGroup>
   
   <ItemGroup>
