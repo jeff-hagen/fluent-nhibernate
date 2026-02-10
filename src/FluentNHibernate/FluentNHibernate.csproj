@@ -23,6 +23,9 @@
     <PackageProjectUrl>https://github.com/jeff-hagen/fluent-nhibernate</PackageProjectUrl>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MinVer" Version="7.0.0">
