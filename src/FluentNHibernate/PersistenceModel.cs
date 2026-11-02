@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 using FluentNHibernate.Conventions;
 using FluentNHibernate.Diagnostics;
 using FluentNHibernate.Mapping;
@@ -16,6 +17,7 @@ using FluentNHibernate.MappingModel.Output;
 using FluentNHibernate.Utils;
 using FluentNHibernate.Visitors;
 using NHibernate.Cfg;
+using NHibernate.Cfg.MappingSchema;
 
 namespace FluentNHibernate;
 
@@ -274,25 +276,56 @@ public class PersistenceModel
         }
     }
 
+    /// <summary>
+    /// The name NHibernate's <see cref="Configuration.AddDocument(XmlDocument)"/> gave every Fluent document; kept so
+    /// <see cref="Configuration.BeforeBindMapping"/> / <see cref="Configuration.AfterBindMapping"/> handlers and
+    /// mapping-error messages see the same <c>FileName</c> as before.
+    /// </summary>
+    const string DocumentName = "(XmlDocument)";
+
+    static readonly XmlSerializer HbmMappingSerializer = new XmlSerializer(typeof(HbmMapping));
+
     public virtual void Configure(Configuration cfg)
     {
         EnsureMappingsBuilt();
 
         foreach (var mapping in compiledMappings.Where(m => !m.Classes.Any()))
-        {
-            var serializer = new MappingXmlSerializer();
-            XmlDocument document = serializer.Serialize(mapping);
-            cfg.AddDocument(document);
-        }
+            cfg.AddDeserializedMapping(ToHbmMapping(mapping), DocumentName);
 
         foreach (var mapping in compiledMappings.Where(m => m.Classes.Any()))
         {
-            var serializer = new MappingXmlSerializer();
-            XmlDocument document = serializer.Serialize(mapping);
-
             if (cfg.GetClassMapping(mapping.Classes.First().Type) is null)
-                cfg.AddDocument(document);
+                cfg.AddDeserializedMapping(ToHbmMapping(mapping), DocumentName);
         }
+    }
+
+    /// <summary>
+    /// Deserializes the Fluent-rendered document straight into the <see cref="HbmMapping"/> NHibernate binds, skipping
+    /// the Save / XSD-validating re-parse / OuterXml round trip <see cref="Configuration.AddDocument(XmlDocument)"/>
+    /// does per document. Bypassing NHibernate's mappings queue is safe: Fluent never writes an <c>extends</c>
+    /// attribute, so no document ever waits on another.
+    /// </summary>
+    static HbmMapping ToHbmMapping(HibernateMapping mapping)
+    {
+        var document = new MappingXmlSerializer().Serialize(mapping);
+
+        using var reader = new MappingNamespaceNodeReader(document.DocumentElement);
+        return (HbmMapping)HbmMappingSerializer.Deserialize(reader);
+    }
+
+    /// <summary>
+    /// Fluent builds its DOM in the empty namespace and writes <c>xmlns="urn:nhibernate-mapping-2.2"</c> as a plain
+    /// attribute, which only becomes the elements' namespace once the text is re-parsed. This reader applies that
+    /// namespace in place, returning the NameTable-atomized string the generated serializer compares by reference.
+    /// </summary>
+    sealed class MappingNamespaceNodeReader(XmlNode node) : XmlNodeReader(node)
+    {
+        string mappingNamespace;
+
+        public override string NamespaceURI =>
+            NodeType is XmlNodeType.Element or XmlNodeType.EndElement && base.NamespaceURI.Length == 0
+                ? mappingNamespace ??= NameTable.Add("urn:nhibernate-mapping-2.2")
+                : base.NamespaceURI;
     }
 
     public bool ContainsMapping(Type type)
